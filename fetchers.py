@@ -13,14 +13,27 @@ def singleton(cls):
 
     return get_instance
 
+# @singleton
 class Fetcher:
-    def __init__(self):
-        self.base_url = "https://5f2be0b4ffc88500167b85a0.mockapi.io/suppliers/"
+    base_url = "https://5f2be0b4ffc88500167b85a0.mockapi.io/suppliers/"
+    def __init__(self, hotel_name, cl):
+        self.url = "https://5f2be0b4ffc88500167b85a0.mockapi.io/suppliers/" + hotel_name
+        self.data = None
+        self.cl = cl
+
+    
     def fetch(self):
-        pass
+        res = requests.get(self.url)
+        response = json.loads(res.text)
+        self.data = response
+        return response
 
     def adapt(self):
-        pass
+        for i in range(len(self.data)):
+            one = self.data[i]
+            self.data[i] = self.cl.adapt(one)
+        return self.data
+
 
 @singleton
 class AcmeFetcher:

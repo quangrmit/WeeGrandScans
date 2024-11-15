@@ -7,21 +7,17 @@ from Location import Location
 from Amenities import Amenities
 from Images import Images
 from schemas import Acme, Hotel, Paperflies, Patagonia
-from fetchers import AcmeFetcher, PaperfliesFetcher, PatagoniaFetcher
-
-
-# create a mutual parent class (for fetching first of all)
-
+from fetchers import AcmeFetcher, PaperfliesFetcher, PatagoniaFetcher, Fetcher
 
 class HotelsInstance:
 
     hotels = []
+    merged = []
     def __init__(self):
         pass
     
+    @classmethod
     def merge(cls):
-        # merge hotels in self.hotels
-        # First we need to adapt each hotel to a mutual schema. Where to do that?
 
         '''
             we have the hotels fetcher, 
@@ -30,25 +26,31 @@ class HotelsInstance:
             then concatenate them
 
         '''
+        for h in cls.hotels:
+            print(h.url)
+            data = h.fetch()
+            for i in range(len(data)):
+                tmp = h.cl.from_dict(data[i])
+                data[i] = h.cl.adapt(tmp)
+                cls.merged.append(data[i])
+                print(data[i])
+            print(data)
+        
 
     @classmethod
     def create_hotel_fetcher(cls, hotel_name):
+        cl = None
         if hotel_name == 'acme':
-            # (DONE) also makclse sure that each hotel is created once (Singleton)
-            hotel = AcmeFetcher()
-            cls.hotels.append(hotel)
-            return hotel
-
+            cl = Acme
         elif hotel_name == 'patagonia':
-            hotel = PatagoniaFetcher()
-            cls.hotels.append(hotel)
-            return hotel
+            cl = Patagonia
         elif hotel_name == 'paperflies':
-            hotel = PaperfliesFetcher()
-            cls.hotels.append(hotel)
-            return hotel
+            cl = Paperflies
         else:
             raise Exception('Invalid hotel name')
+        f = Fetcher(hotel_name, cl)
+        cls.hotels.append(f)
+        return f
 
 
 class HotelMerger:
@@ -73,11 +75,8 @@ def main():
 
 if __name__ == "__main__":
     
-    
-    patagonia = HotelsInstance.create_hotel_fetcher('paperflies')
-    hotels = patagonia.fetch()
-    for indi in hotels:
-        tmp = Paperflies.from_dict(indi)
-        print(tmp)
-        print('\n')
-    
+    HotelsInstance.create_hotel_fetcher('acme')
+    HotelsInstance.create_hotel_fetcher('patagonia')
+    HotelsInstance.create_hotel_fetcher('paperflies')
+
+    HotelsInstance.merge()
