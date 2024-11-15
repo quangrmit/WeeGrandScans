@@ -1,0 +1,6 @@
+(done)Create classes for each hotel 
+(done)Create classes for Location, Amenities, and Images
+make it work first
+    reiterate the design of the program
+apply Template method pattern in gemini
+
