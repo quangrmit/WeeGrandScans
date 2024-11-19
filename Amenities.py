@@ -1,12 +1,27 @@
 from MediaEntry import MediaEntry
 from typing import List, Dict
 from dataclasses import dataclass
+from utils import decide_attr
 
 @dataclass
 class Amenities:
-    # Is this supposed to be a dict?
-    # amenities: List[MediaEntry]
-    amenities: Dict
+    general: List 
+    room: List 
 
-    def __init__(self, li: List):
-        self.amenities = {'general': li, 'room': []}
+    @classmethod
+    def from_list( cls, li: List):
+        amenities = {'general': li, 'room': []}
+
+        return cls(**amenities)
+    
+    def merge(self, other):
+
+        amenities = Amenities([], [])
+
+        for key in [key for key in dir(other) if not key.startswith('__') and not callable(getattr(other, key))]:
+
+            setattr(amenities, key, decide_attr(getattr(other, key), getattr(self, key)))
+
+        
+
+        return amenities

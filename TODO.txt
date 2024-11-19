@@ -1,13 +1,18 @@
-(done)Create classes for each hotel 
-(done)Create classes for Location, Amenities, and Images
 
-(need testing) (done) (priority) redo the schemas of Amenities and check others as well
 
-(need testing) (done)make it work first
-    reiterate the design of the program
-apply Template method pattern in gemini
 
-(URGENT) SOme ids are the same -> reread the problem description to fix misunderstanding
+(URGENT) when merging schemas, we need to fill the missing attributes, not select which one has more attributes
+    - for this, define empty = null || '' || []
+    - if check both objects for empty values, if both are empty take either, take the one that is not empty
+    - if the attribute is not null, pick the one that is the longest
+
+(URGENT) fix merging of booking conditions( run iJhz 5432)
+(URGENT) we havent check if the hotel_ids are none or not(same with destination_ids)
+
+
+
 
 
 do we still need singleton? And how to do it?
+
+Cases to think about: more complex urls? more hotels with different schemas?(nothing we can do about)
