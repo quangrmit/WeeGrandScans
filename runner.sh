@@ -1,2 +1,2 @@
 #!/bin/bash
-python hotel_merger.py "$1" "$2"
+python main.py "$1" "$2"

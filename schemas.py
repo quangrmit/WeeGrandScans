@@ -8,11 +8,16 @@ from utils import decide_attr
 from abc import ABC, abstractmethod
 
 
-class BaseSchema(ABC):
+class BaseSupplierSchema(ABC):
 
     @abstractmethod
     def adapt(self, other):
         pass
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        return cls(**data)
+
 
 @dataclass
 @dataclass_json
@@ -49,7 +54,7 @@ class Hotel():
 
 
 @dataclass
-class Acme(BaseSchema):
+class Acme(BaseSupplierSchema):
     Id: str
     DestinationId: str
     Name: str
@@ -62,9 +67,6 @@ class Acme(BaseSchema):
     Description: str
     Facilities: List[str]
 
-    @classmethod
-    def from_dict(cls, data: dict):
-        return cls(**data)
     
     @staticmethod
     def adapt(ins) -> Hotel:
@@ -83,7 +85,7 @@ class Acme(BaseSchema):
     
 
 @dataclass
-class Patagonia(BaseSchema):
+class Patagonia(BaseSupplierSchema):
     id: str
     destination: int
     name: str
@@ -95,10 +97,6 @@ class Patagonia(BaseSchema):
     images: Dict
 
     
-    @classmethod
-    def from_dict(cls, data: dict):
-        return cls(**data)
-
     @staticmethod
     def adapt(ins) -> Hotel:
         hotel = Hotel()
@@ -115,7 +113,7 @@ class Patagonia(BaseSchema):
         return hotel
 
 @dataclass
-class Paperflies(BaseSchema):
+class Paperflies(BaseSupplierSchema):
     hotel_id: str
     destination_id: str
     hotel_name: str
@@ -125,9 +123,7 @@ class Paperflies(BaseSchema):
     images: Dict
     booking_conditions: List[str]
 
-    @classmethod
-    def from_dict(cls, data: dict):
-        return cls(**data)
+
 
     @staticmethod
     def adapt(ins) -> Hotel:

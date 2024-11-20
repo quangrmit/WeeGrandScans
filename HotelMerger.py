@@ -1,4 +1,3 @@
-import argparse
 import json
 from schemas import Acme, Paperflies, Patagonia
 from Fetcher import Fetcher
@@ -7,7 +6,7 @@ from Fetcher import Fetcher
 class HotelMerger:
 
     hotel_fetchers = []
-    merged = []
+
     mapping = {
         'acme': Acme,
         'patagonia': Patagonia,
@@ -38,7 +37,6 @@ class HotelMerger:
                     cls.database[key] = self_obj.merge(other_obj)
                 else:
                     cls.database[key] = data[i]
-                cls.merged.append(data[i])
         
 
     @classmethod
@@ -78,25 +76,3 @@ class HotelMerger:
         return res
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="Merge hotel information based on hotel and destination IDs.")
-
-    parser.add_argument('hotel_ids', type=str,
-                        help="Comma-separated list of hotel IDs or 'none'")
-    parser.add_argument('destination_ids', type=str,
-                        help="Comma-separated list of destination IDs or 'none'")
-
-    args = parser.parse_args()
-
-    HotelMerger.create_hotel_fetcher('acme')
-    HotelMerger.create_hotel_fetcher('patagonia')
-    HotelMerger.create_hotel_fetcher('paperflies')
-
-    HotelMerger.merge()
-
-    HotelMerger.find(args.hotel_ids, args.destination_ids)
-
-
-if __name__ == "__main__":
-    main()
