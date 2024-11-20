@@ -1,5 +1,4 @@
-from MediaEntry import MediaEntry
-from typing import List, Dict
+from typing import List
 from dataclasses import dataclass
 from utils import decide_attr
 
@@ -18,10 +17,18 @@ class Amenities:
 
         amenities = Amenities([], [])
 
-        for key in [key for key in dir(other) if not key.startswith('__') and not callable(getattr(other, key))]:
+          # Loop through attributes of an object
+        for attribute in [key for key in dir(other) if not key.startswith('__') and not callable(getattr(other, key))]:
 
-            setattr(amenities, key, decide_attr(getattr(other, key), getattr(self, key)))
+            # Get values of the attribute from 2 objects
+            self_attribute = getattr(self, attribute)
+            other_attribute = getattr(other, attribute)
 
+            # Decide on which value to take
+            decision = decide_attr(other_attribute, self_attribute)
+
+            # Set the attribute to the better value
+            setattr(amenities, attribute, decision)
         
 
         return amenities

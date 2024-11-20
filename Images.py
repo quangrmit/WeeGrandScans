@@ -18,10 +18,18 @@ class Images:
 
         images = Images()
 
-        for key in [key for key in dir(other) if not key.startswith('__') and not callable(getattr(other, key))]:
+           # Loop through attributes of an object
+        for attribute in [key for key in dir(other) if not key.startswith('__') and not callable(getattr(other, key))]:
 
-            setattr(images, key, decide_attr(
-                getattr(other, key), getattr(self, key)))
+            # Get values of the attribute from 2 objects
+            self_attribute = getattr(self, attribute)
+            other_attribute = getattr(other, attribute)
+
+            # Decide on which value to take
+            decision = decide_attr(other_attribute, self_attribute)
+
+            # Set the attribute to the better value
+            setattr(images, attribute, decision)
 
         return images
 

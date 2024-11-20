@@ -21,22 +21,32 @@ class HotelMerger:
     @classmethod
     def merge(cls):
         for hotel_fetcher in cls.hotel_fetchers:
-            data = hotel_fetcher.fetch()
-            for i in range(len(data)):
-                obj = hotel_fetcher.hotel_classname.from_dict(data[i])
-                data[i] = hotel_fetcher.hotel_classname.adapt(obj)
+            # Fetch the data objs
+            json_data = hotel_fetcher.fetch()
+      
+            for supplier_json_obj in json_data:
+                # Convert JSON to supplier instance
+                supplier_instance = hotel_fetcher.hotel_classname.from_dict(supplier_json_obj)
+                hotel_instance = hotel_fetcher.hotel_classname.adapt(supplier_instance) # Adapt supplier instance to mutual Hotel instance
 
-                hotel_id_key = str(data[i].id)
+                # Add to key list (for searching in 'none' Command line argument cases)
+                hotel_id_key = str(hotel_instance.id)
                 cls.all_hotel_ids.add(hotel_id_key)
-                destination_id_key = str(data[i].destination_id)
+
+                # Add to key list (for searching in 'none' Command line argument cases)
+                destination_id_key = str(hotel_instance.destination_id)
                 cls.all_destination_ids.add(destination_id_key)
+                
                 key = hotel_id_key + destination_id_key
+
                 if key in cls.database:
+                    # Merge 2 objs that are considered 'same' in the database
                     self_obj = cls.database[key]
-                    other_obj = data[i]
+                    other_obj = hotel_instance
                     cls.database[key] = self_obj.merge(other_obj)
                 else:
-                    cls.database[key] = data[i]
+                    cls.database[key] = hotel_instance
+
         
 
     @classmethod
@@ -51,6 +61,7 @@ class HotelMerger:
     @classmethod
     def find(cls, hotel_ids, destination_ids):
 
+
         if hotel_ids == 'none':
             hotel_ids = cls.all_hotel_ids
         else:
@@ -62,9 +73,10 @@ class HotelMerger:
             destination_ids = destination_ids.split(",")
 
         
-
+        # Generate possible combination of keys to query
         possible_keys = [str(hotel_id) + str(destination_id)
                          for hotel_id in hotel_ids for destination_id in destination_ids]
+                         
         res = []
         for key in possible_keys:
             if key in cls.database:

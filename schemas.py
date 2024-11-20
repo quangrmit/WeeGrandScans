@@ -36,10 +36,12 @@ class Hotel():
         result.id = self.id
         result.destination_id = self.destination_id
         
+        # Compare the length of attribute name
         self_len = len(self.name) if self.name else 0
         other_len = len(other.name) if other.name else 0
         result.name = self.name if self_len >= other_len else other.name
 
+        # Compare the length of attribute description
         self_len = len(self.description) if self.description else 0
         other_len = len(other.description) if other.description else 0
         result.description = self.description if self_len >= other_len else other.description
@@ -48,7 +50,7 @@ class Hotel():
         result.amenities = self.amenities.merge(other.amenities)
         result.images = self.images.merge(other.images)
 
-
+        # Compare the length of attribute booking conditions
         result.booking_conditions = self.booking_conditions if len(self.booking_conditions) >= len(other.booking_conditions) else other.booking_conditions
         return result
 
